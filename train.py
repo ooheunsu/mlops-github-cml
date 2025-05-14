@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn import preprocessing
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
@@ -28,8 +29,11 @@ X = imp.transform(X)
 
 
 # Linear model
-clf = LogisticRegression()
-yhat = cross_val_predict(clf, X, y, cv=5)
+# clf = LogisticRegression()
+# yhat = cross_val_predict(clf, X, y, cv=5)
+
+# RandomForest
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
 
 acc = np.mean(yhat==y)
 tn, fp, fn, tp = confusion_matrix(y, yhat).ravel()
