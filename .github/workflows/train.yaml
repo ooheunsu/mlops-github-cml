@@ -1,0 +1,28 @@
+name: model-training
+on: [push]
+permissions: write-all
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - uses: iterative/setup-cml@v1
+      - name: Train model
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install -r requirements.txt
+          dvc repro 
+
+          git fetch --prune
+          dvc metrics diff --md main > report.md
+
+          echo "## Validating results by region"
+          echo "![](by_region.png)" >> report.md
+          cml comment create report.md
